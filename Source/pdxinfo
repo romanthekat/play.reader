@@ -1,0 +1,7 @@
+name=play-reader
+author=RomanTheKat
+description=
+bundleID=net.romangaranin.play-reader
+version=1.0
+buildNumber=100
+imagePath=SystemAssets
