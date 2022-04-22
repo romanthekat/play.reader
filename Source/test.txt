@@ -1,6 +1,6 @@
 # test header
 1 line 1
-2 line 2 ururu pew pew pew
+2 line 2 pew pew pew
 3 line 3?
 4 meow! only meow, only hardcore
 
