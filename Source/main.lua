@@ -7,7 +7,9 @@ local gfx <const> = playdate.graphics
 
 gfx.setColor(gfx.kColorWhite)
 local font = gfx.font.new('fonts/Roobert/Roobert-11-Medium-table-22-22.png')
+--gfx.setFont(font)
 
+local crankStepPerLine = 7
 local linesPerScreen = 11
 local lineHeight = 20
 local extraScrollLines = 4
@@ -30,14 +32,15 @@ local needRefresh = true
 
 function playdate.update()
     playdate.drawFPS(380, 0)
-
-    --gfx.setFont(font)
-
-    if playdate.buttonIsPressed(playdate.kButtonUp) then
+    
+    local crankChange = playdate.getCrankChange() 
+    local crankMoved = math.abs(crankChange) > crankStepPerLine
+    
+    if playdate.buttonIsPressed(playdate.kButtonUp) or (crankMoved and crankChange < 0) then
        index -= 1
        needRefresh = true
     end
-    if playdate.buttonIsPressed(playdate.kButtonDown) then
+    if playdate.buttonIsPressed(playdate.kButtonDown) or (crankMoved and crankChange > 0) then
         index += 1
         needRefresh = true
     end
