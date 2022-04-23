@@ -5,8 +5,8 @@ Simple reader app for [play.date](https://play.date).
 
 # How-to use
 Initial screen shows list of readable files.  
-Button A opens selected file. Scrollable via d-pad or crank.  
-Button B returns to files list. 
+`Button A` opens selected file. Scrollable via d-pad or crank.  
+`Button B` returns to files list. 
 
 # Adding new file
 Readable text files: `.txt`, `.md`, `.adoc`, `.rst`.  
