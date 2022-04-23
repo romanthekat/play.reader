@@ -16,5 +16,5 @@ To add new book you'll need to add it in `Source` folder, and then [re-compile p
 >Behind the scenes, there are two directories your game has access to: the root of your app bundle (read-only), and a Data directory unique to your game (readable and writeable) where you can store your game’s saved state or other data.
 
 # Todo
-[] selectable fonts
-[] ensure no excess redraws made/no battery waste 
+- [ ] selectable fonts
+- [ ] ensure no excess redraws made/no battery waste 
