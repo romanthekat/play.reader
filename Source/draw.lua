@@ -1,9 +1,9 @@
 local gfx <const> = playdate.graphics
 
-crankStepPerLine = 7
+local crankStepPerLine = 7
 linesPerScreen = 11
 lineHeight = 20
-extraScrollLines = 4
+local extraScrollLines = 4
 needRefresh = true
 
 function handleTextDrawing(content, index)
@@ -18,13 +18,13 @@ function handleTextDrawing(content, index)
 		index += 1
 		needRefresh = true
 	end
-	
-	if index < 0 then
-		index = 0
-	end
+
 	if index > #content - linesPerScreen + extraScrollLines then
 		index = #content - linesPerScreen + extraScrollLines
 	end
+	if index < 0 then
+		index = 0
+	end	
 	
 	if needRefresh then
 		gfx.clear()
@@ -33,7 +33,11 @@ function handleTextDrawing(content, index)
 		local i = 1
 		while i <= linesPerScreen do
 			if index+i <= #content then
-				printedLength, printedHeight = gfx.drawTextInRect(content[index+i], 2, (i-1+printOffset)*22, 400, 240) 
+				line = content[index+i]
+				local x = 2
+				local y = (i-1+printOffset)*lineHeight
+				
+				printedLength, printedHeight = gfx.drawTextInRect(line, x, y, 400, 240) 
 				
 				if printedHeight > lineHeight then
 					printOffset += printedHeight //= lineHeight - 1

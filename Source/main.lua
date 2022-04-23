@@ -1,4 +1,4 @@
-import "CoreLibs/object"
+-- import "CoreLibs/object"
 import "CoreLibs/graphics"
 import "CoreLibs/timer"
 import 'CoreLibs/ui/gridview.lua'
@@ -17,14 +17,14 @@ local filename = nil
 local fileContent = {}
 
 local readingFile = false
-local index = 0
+local readingIndex = 0
 
-local listviewHeight = 240
-local listview = playdate.ui.gridview.new(0, lineHeight)
-listview:setNumberOfRows(#files)
-listview:setCellPadding(0, 0, 0, 0)
+local filesListHeight = 240
+local filesList = playdate.ui.gridview.new(0, lineHeight)
+filesList:setNumberOfRows(#files)
+filesList:setCellPadding(0, 0, 0, 0)
 
-function listview:drawCell(section, row, column, selected, x, y, width, height)
+function filesList:drawCell(section, row, column, selected, x, y, width, height)
     if selected then
         gfx.setColor(gfx.kColorBlack)
         gfx.fillRect(x, y, width, 20, 4)
@@ -38,23 +38,24 @@ end
 
 function playdate.upButtonUp()
     if not readingFile then
-        listview:selectPreviousRow(false)
+        filesList:selectPreviousRow(false)
     end
 end
 
 function playdate.downButtonUp()
     if not readingFile then
-        listview:selectNextRow(false)
+        filesList:selectNextRow(false)
     end
 end
 
 function playdate.AButtonDown()
     if not readingFile then
         readingFile = true
-        fileContent = readFileContent(files[listview:getSelectedRow()])
+        filename = files[filesList:getSelectedRow()]
+        fileContent = readFileContent(filename)
         
         needRefresh = true
-        index = 0
+        readingIndex = getReadingIndex(filename)
     end
 end
 
@@ -64,19 +65,22 @@ function playdate.BButtonDown()
         files = getFiles()
         
         needRefresh = true
-        index = 0
     end
+end
+
+function getReadingIndex(filename)
+    return 0 -- TODO: add support for reading position per file
 end
 
 function playdate.update()
     playdate.timer.updateTimers()
-    playdate.drawFPS(385, 0) 
+    -- playdate.drawFPS(385, 0) 
 
     if not readingFile then
         gfx.clear()
-        listview:drawInRect(0, 0, 400, listviewHeight)
+        filesList:drawInRect(0, 0, 400, filesListHeight)
     else
-        index = handleTextDrawing(fileContent, index)
+        readingIndex = handleTextDrawing(fileContent, readingIndex)
     end
     
     -- gfx.sprite.update()
