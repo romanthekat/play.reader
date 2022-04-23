@@ -1,31 +1,36 @@
-local gfx <const> = playdate.graphics
+width, height = playdate.display.getSize()
 
-local crankStepPerLine = 7
 linesPerScreen = 11
 lineHeight = 20
-local extraScrollLines = 4
 needRefresh = true
 
-function handleTextDrawing(content, index)
-	local crankChange = playdate.getCrankChange() 
-	local crankMoved = math.abs(crankChange) > crankStepPerLine
-	
-	if playdate.buttonIsPressed(playdate.kButtonUp) or (crankMoved and crankChange < 0) then
-	   index -= 1
-	   needRefresh = true
-	end
-	if playdate.buttonIsPressed(playdate.kButtonDown) or (crankMoved and crankChange > 0) then
-		index += 1
-		needRefresh = true
-	end
+filesGrid = playdate.ui.gridview.new(0, lineHeight)
+filesGrid:setCellPadding(0, 0, 0, 0)
 
-	if index > #content - linesPerScreen + extraScrollLines then
-		index = #content - linesPerScreen + extraScrollLines
-	end
-	if index < 0 then
-		index = 0
-	end	
+crankStepPerLine = 7
+extraScrollLines = 4
+local filesGridHeight = 240
+
+function drawFilesList(files)
+	gfx.clear()
 	
+	filesGrid:setNumberOfRows(#files)
+	filesGrid:drawInRect(0, 0, 400, filesGridHeight)
+end
+
+function filesGrid:drawCell(section, row, column, selected, x, y, width, height)
+	if selected then
+		gfx.setColor(gfx.kColorBlack)
+		gfx.fillRect(x, y, width, 20, 4)
+		gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
+	else
+		gfx.setImageDrawMode(gfx.kDrawModeCopy)
+	end
+	gfx.drawTextInRect(files[row], x, y, width, height+2, nil, "...", kTextAlignment.center)
+	
+end
+
+function handleTextDrawing(content, index)
 	if needRefresh then
 		gfx.clear()
 		
@@ -46,6 +51,7 @@ function handleTextDrawing(content, index)
 			i += 1
 		end
 		needRefresh = false  
+		playdate.display.flush()
 	end 
 	
 	return index

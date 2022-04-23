@@ -5,13 +5,13 @@ import 'CoreLibs/ui/gridview.lua'
 import 'files'
 import 'draw'
 
-local gfx <const> = playdate.graphics
+gfx = playdate.graphics
 
 gfx.setColor(gfx.kColorWhite)
 local font = gfx.font.new('fonts/Roobert/Roobert-11-Medium-table-22-22.png')
 --gfx.setFont(font)
 
-local files = getFiles()
+files = getFiles()
 
 local filename = nil
 local fileContent = {}
@@ -19,39 +19,33 @@ local fileContent = {}
 local readingFile = false
 local readingIndex = 0
 
-local filesListHeight = 240
-local filesList = playdate.ui.gridview.new(0, lineHeight)
-filesList:setNumberOfRows(#files)
-filesList:setCellPadding(0, 0, 0, 0)
 
-function filesList:drawCell(section, row, column, selected, x, y, width, height)
-    if selected then
-        gfx.setColor(gfx.kColorBlack)
-        gfx.fillRect(x, y, width, 20, 4)
-        gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
-    else
-        gfx.setImageDrawMode(gfx.kDrawModeCopy)
-    end
-    gfx.drawTextInRect(files[row], x, y, width, height+2, nil, "...", kTextAlignment.center)
-    
-end
 
 function playdate.upButtonUp()
     if not readingFile then
-        filesList:selectPreviousRow(false)
+        filesGrid:selectPreviousRow(false)
+    -- else 
+    --     readingIndex -= 1
     end
+    
+    needRefresh = true
 end
 
 function playdate.downButtonUp()
     if not readingFile then
-        filesList:selectNextRow(false)
+        filesGrid:selectNextRow(false)
+        readingIndex += 1
+    -- else
+    --     readingIndex += 1
     end
+    
+    needRefresh = true
 end
 
 function playdate.AButtonDown()
     if not readingFile then
         readingFile = true
-        filename = files[filesList:getSelectedRow()]
+        filename = files[filesGrid:getSelectedRow()]
         fileContent = readFileContent(filename)
         
         needRefresh = true
@@ -72,14 +66,37 @@ function getReadingIndex(filename)
     return 0 -- TODO: add support for reading position per file
 end
 
+function handleContiniousInput(index)
+   local crankChange = playdate.getCrankChange() 
+   local crankMoved = math.abs(crankChange) > crankStepPerLine
+   
+   if playdate.buttonIsPressed(playdate.kButtonUp) or (crankMoved and crankChange < 0) then
+      index -= 1
+      needRefresh = true
+   end
+   if playdate.buttonIsPressed(playdate.kButtonDown) or (crankMoved and crankChange > 0) then
+       index += 1
+       needRefresh = true
+   end
+   
+   if index > #fileContent - linesPerScreen + extraScrollLines then
+       index = #fileContent - linesPerScreen + extraScrollLines
+   end
+   if index < 0 then
+       index = 0
+   end	 
+   
+   return index
+end
+
 function playdate.update()
     playdate.timer.updateTimers()
     -- playdate.drawFPS(385, 0) 
 
     if not readingFile then
-        gfx.clear()
-        filesList:drawInRect(0, 0, 400, filesListHeight)
+        drawFilesList(files)
     else
+        readingIndex = handleContiniousInput(readingIndex)
         readingIndex = handleTextDrawing(fileContent, readingIndex)
     end
     
