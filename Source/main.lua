@@ -1,7 +1,8 @@
 import "CoreLibs/object"
 import "CoreLibs/graphics"
-import "CoreLibs/sprites"
 import "CoreLibs/timer"
+import 'CoreLibs/ui/gridview.lua'
+import 'files'
 
 local gfx <const> = playdate.graphics
 
@@ -14,25 +15,87 @@ local linesPerScreen = 11
 local lineHeight = 20
 local extraScrollLines = 4
 
-local filename = "test.txt"
-
-file = playdate.file.open(filename, playdate.file.kFileRead)
-local linesCount = 1
-local content = {}
-repeat
-    l = file:readline()
-    if l then
-        content[linesCount] = l
-        linesCount += 1
-    end
-until l == nil
-
+local files = getFiles()
+local readingFile = false
 local index = 0
 local needRefresh = true
 
-function playdate.update()
-    playdate.drawFPS(380, 0)
+local filename = nil
+local linesCount = 0
+local fileContent = {}
+
+
+
+-------------
+local listviewHeight = 240
+
+local listview = playdate.ui.gridview.new(0, lineHeight)
+listview:setNumberOfRows(#files)
+listview:setCellPadding(0, 0, 0, 0)
+-- listview:setContentInset(24, 24, 13, 11)
+
+
+function listview:drawCell(section, row, column, selected, x, y, width, height)
+    if selected then
+        gfx.setColor(gfx.kColorBlack)
+        gfx.fillRect(x, y, width, 20, 4)
+        gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
+    else
+        gfx.setImageDrawMode(gfx.kDrawModeCopy)
+    end
+    gfx.drawTextInRect(files[row], x, y, width, height+2, nil, "...", kTextAlignment.center)
     
+end
+
+function playdate.upButtonUp()
+    if not readingFile then
+        listview:selectPreviousRow(false)
+    end
+end
+
+function playdate.downButtonUp()
+    if not readingFile then
+        listview:selectNextRow(false)
+    end
+end
+
+
+function playdate.AButtonDown()
+    if not readingFile then
+        readingFile = true
+        fileContent, linesCount = readFileContent(files[listview:getSelectedRow()])
+        
+        needRefresh = true
+        index = 0
+    end
+end
+
+function playdate.BButtonDown()
+    if readingFile then
+        readingFile = false
+        files = getFiles()
+        
+        needRefresh = true
+        index = 0
+    end
+end
+
+function playdate.update()
+    playdate.timer.updateTimers()
+    playdate.drawFPS(385, 0) 
+
+    if not readingFile then
+        gfx.clear()
+        listview:drawInRect(0, 0, 400, listviewHeight)
+    else
+        index = handleTextDrawing(fileContent, index)
+    end
+    
+    -- gfx.sprite.update()
+end
+
+
+function handleTextDrawing(content, index)
     local crankChange = playdate.getCrankChange() 
     local crankMoved = math.abs(crankChange) > crankStepPerLine
     
@@ -70,6 +133,5 @@ function playdate.update()
         needRefresh = false  
     end 
     
-    gfx.sprite.update()
-    playdate.timer.updateTimers()
+    return index
 end
