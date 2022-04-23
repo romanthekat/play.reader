@@ -31,3 +31,17 @@ function getFiles()
 	
 	return result
 end
+
+local filesPositionsFilename = "filesPositions"
+function getFilesPositions()
+	local filesPositions = playdate.datastore.read(filesPositionsFilename)
+	if filesPositions == nil then
+		filesPositions = {}
+	end
+	
+	return filesPositions
+end
+
+function saveFilesPositions(filesPositions)
+	playdate.datastore.write(filesPositions, filesPositionsFilename)
+end

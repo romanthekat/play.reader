@@ -19,12 +19,14 @@ local fileContent = {}
 local readingFile = false
 local readingIndex = 0
 
+filesPositions = getFilesPositions()
 
 function playdate.upButtonUp()
     if not readingFile then
         filesGrid:selectPreviousRow(false)
-    -- else 
-    --     readingIndex -= 1
+    else 
+        -- readingIndex -= 1
+        filesPositions[filename] = readingIndex
     end
     
     needRefresh = true
@@ -34,8 +36,9 @@ function playdate.downButtonUp()
     if not readingFile then
         filesGrid:selectNextRow(false)
         readingIndex += 1
-    -- else
-    --     readingIndex += 1
+    else
+        -- readingIndex += 1
+        filesPositions[filename] = readingIndex
     end
     
     needRefresh = true
@@ -62,8 +65,22 @@ function playdate.BButtonDown()
 end
 
 function getReadingIndex(filename)
-    return 0 -- TODO: add support for reading position per file
+    index = filesPositions[filename]
+    if index == nil then 
+        index = 0
+    end
+    
+    return index
 end
+
+function playdate.gameWillTerminate()
+    saveFilesPositions(filesPositions)
+end
+
+function playdate.deviceWillSleep()
+    saveFilesPositions(filesPositions)
+end
+
 
 function handleContiniousInput(index)
    local crankChange = playdate.getCrankChange() 
