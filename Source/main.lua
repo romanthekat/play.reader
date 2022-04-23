@@ -81,7 +81,6 @@ function playdate.deviceWillSleep()
     saveFilesPositions(filesPositions)
 end
 
-
 function handleContiniousInput(index)
    local crankChange = playdate.getCrankChange() 
    local crankMoved = math.abs(crankChange) > crankStepPerLine
