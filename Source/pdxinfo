@@ -1,6 +1,6 @@
 name=play.reader
 author=RomanTheKat
-description=
+description=Simple reader app for play.date
 bundleID=net.romangaranin.play.reader
 version=1.0
 buildNumber=100
