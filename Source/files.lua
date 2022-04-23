@@ -22,7 +22,7 @@ function getFiles()
 			table.insert(result, file)
 		elseif file:sub(-3) == ".md" then
 			table.insert(result, file)
-		elseif file:sub(-4) == ".doc" then
+		elseif file:sub(-5) == ".adoc" then
 			table.insert(result, file)
 		elseif file:sub(-4) == ".rst" then
 			table.insert(result, file)

@@ -20,7 +20,6 @@ local readingFile = false
 local readingIndex = 0
 
 
-
 function playdate.upButtonUp()
     if not readingFile then
         filesGrid:selectPreviousRow(false)
