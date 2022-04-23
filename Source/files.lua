@@ -1,16 +1,14 @@
 function readFileContent(filename)
 	file = playdate.file.open(filename, playdate.file.kFileRead)
-	local linesCount = 1
 	local content = {}
 	repeat
 		l = file:readline()
 		if l then
-			content[linesCount] = l
-			linesCount += 1
+			table.insert(content, l)
 		end
 	until l == nil
 	
-	return content, linesCount
+	return content
 end
 
 function getFiles()
