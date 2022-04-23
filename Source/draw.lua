@@ -27,7 +27,6 @@ function filesGrid:drawCell(section, row, column, selected, x, y, width, height)
 		gfx.setImageDrawMode(gfx.kDrawModeCopy)
 	end
 	gfx.drawTextInRect(files[row], x, y, width, height+2, nil, "...", kTextAlignment.center)
-	
 end
 
 function handleTextDrawing(content, index)

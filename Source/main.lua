@@ -1,6 +1,6 @@
 -- import "CoreLibs/object"
 import "CoreLibs/graphics"
-import "CoreLibs/timer"
+-- import "CoreLibs/timer"
 import 'CoreLibs/ui/gridview.lua'
 import 'files'
 import 'draw'
@@ -8,8 +8,8 @@ import 'draw'
 gfx = playdate.graphics
 
 gfx.setColor(gfx.kColorWhite)
-local font = gfx.font.new('fonts/Roobert/Roobert-11-Medium-table-22-22.png')
---gfx.setFont(font)
+-- local font = gfx.font.new('fonts/Roobert/Roobert-11-Medium-table-22-22.png')
+-- gfx.setFont(font)
 
 files = getFiles()
 
@@ -35,7 +35,6 @@ end
 function playdate.downButtonUp()
     if not readingFile then
         filesGrid:selectNextRow(false)
-        readingIndex += 1
     else
         -- readingIndex += 1
         filesPositions[filename] = readingIndex
