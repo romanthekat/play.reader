@@ -1,4 +1,4 @@
-# play-reader
+# play.reader
 Simple reader app for [play.date](https://play.date).  
 
 ![example](./example.gif)
