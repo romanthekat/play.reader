@@ -17,4 +17,5 @@ To add new book you'll need to add it in `Source` folder, and then [re-compile p
 
 # Todo
 - [ ] selectable fonts
+- [ ] customise scroll speed
 - [ ] ensure no excess redraws made/no battery waste 
